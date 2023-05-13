@@ -11,6 +11,8 @@ import { Link } from 'react-router-dom';
 import CenteredBox from '../container/centeredBox/centeredBox';
 import { generateLabel } from '../container/function/generateLabel';
 
+import axios from 'axios';
+
 class Login extends PureComponent {
     state = {
         myForm: {
@@ -61,7 +63,14 @@ class Login extends PureComponent {
             }, () => {
                 allFormValid = allFormValid && this.state.myForm[d].valid;
                 if(d === "password" && allFormValid) {
-                    alert("all input valid");
+                    axios.post(
+                        "https://6618-182-253-199-42.ngrok-free.app/login",
+                        JSON.stringify(this.state.myForm)
+                    ).then((response) => {
+                        alert(response)
+                    }).catch((response) => {
+                        alert(response)
+                    })
                 }
             })
         });
@@ -69,17 +78,16 @@ class Login extends PureComponent {
 
     render() {
         const { myForm } = this.state;
-
         return(
             <>
                 <CenteredBox>
-                    <Typography align='center' mb={'15%'}>
+                    <Typography mb={'15%'}>
                         Login to NAMA APLIKASI
                     </Typography>
                     {Object.keys(myForm).map(e => (
                         <Box key={e} sx={{ marginTop: '4.5%' }}>
                             <TextField
-                                label={generateLabel(e)}
+                                label={e.includes("User") ? `${generateLabel(e)} / password` : generateLabel(e)}
                                 placeholder={`Masukkan ${e}`}
                                 error={!myForm[e].valid}
                                 value={myForm[e].value}

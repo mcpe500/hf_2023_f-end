@@ -11,6 +11,8 @@ import MenuItem from '@mui/material/MenuItem';
 
 import { generateLabel } from '../container/function/generateLabel';
 
+import axios from 'axios';
+
 const structure = (index) => {
   const baseStructure = {
     myForm: {
@@ -65,8 +67,7 @@ const structure = (index) => {
       }
     }
 }
-const jenjangSiswa = ["SMP", "SMA", "Mahasiswa / Kuliah"]
-const jenjangDosen = ["S1", "S2", "S3"]
+const jenjang = ["SD", "SMP", "SMA"]
 const gelarDosen = ["S1", "S2", "S3"]
 
 class Register extends PureComponent {
@@ -74,8 +75,8 @@ class Register extends PureComponent {
     index: 1,
     ...structure(0),
     listInput: {
-      "jenjangPendidikan": jenjangSiswa,
-      "gelar": [""],
+      "jenjangPendidikan": jenjang,
+      "gelar": gelarDosen,
       "pelajaran": ["Matematika", "IPA", "IPS", "Olahraga", "Bahasa Indonesia", "Bahasa Inggris", "PKN", "Sejarah", "Kesenian"]
     }
   }
@@ -98,6 +99,7 @@ class Register extends PureComponent {
     let allFormValid = true;
     Object.keys(this.state.myForm).forEach(d => {
         this.setState((prevState) => {
+            const stringLength = prevState.myForm[d].value.toString().trim().length
             return {
                 ...prevState,
                 myForm: {
@@ -105,24 +107,31 @@ class Register extends PureComponent {
                     [d]: {
                         ...prevState.myForm[d],
                         valid: d.includes("pass") 
-                            ? prevState.myForm[d].value.trim().length >= 8
+                            ? stringLength >= 8
                             : d.includes("mail") 
                               ? prevState.myForm[d].value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) && prevState.myForm[d].value.trim().length > 0
-                              : prevState.myForm[d].value.trim().length > 0,
+                              : stringLength > 0,
                         message: d.includes("pass") 
-                            ? prevState.myForm[d].value.trim().length >= 8 ? "" : "Atleast 8 long password"
+                            ? stringLength >= 8 ? "" : "Atleast 8 long password"
                             : d.includes("mail") 
-                              ? prevState.myForm[d].value.trim().length > 0
+                              ? stringLength > 0
                                 ? !prevState.myForm[d].value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) && "Email format is not valid !"
                                 :  "Cannot be empty"
-                              : prevState.myForm[d].value.trim().length > 0 ? "" : "Cannot be empty !"
+                              : stringLength > 0 ? "" : "Cannot be empty !"
                     }
                 }
             }
         }, () => {
             allFormValid = allFormValid && this.state.myForm[d].valid;
             if(d === "password" && allFormValid) {
-                alert("all input valid");
+              axios.post(
+                "",
+                JSON.stringify(this.state.myForm)
+              ).then((response) => {
+                  alert(response)
+              }).catch((response) => {
+                  alert(response)
+              })
             }
         })
     });
@@ -132,9 +141,12 @@ class Register extends PureComponent {
     const { myForm } = this.state;
 
     return(
-      <>
+      <Box sx={{
+        marginTop: this.state.index === 1 ? "1vh" : "17vh",
+        padding: "1%"
+      }}>
         <CenteredBox>
-          <Typography align='center' mb={'15%'}>
+          <Typography mb={'15%'}>
               Register to NAMA APLIKASI
           </Typography>
           {Object.keys(myForm).map(e => e.includes("Lahir") 
@@ -142,10 +154,12 @@ class Register extends PureComponent {
               <Box key={e} sx={{ marginTop: '7.5%' }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker 
+                  value={new Date(myForm[e].value)}
                   sx={{
                     width: "86.5%"
                   }} 
-                  label={generateLabel(e)}/>
+                  label={generateLabel(e)}
+                  onChange={(ev) => this.handleInputChange(e, (new Date(ev)))}/>
                 </LocalizationProvider>
               </Box>
           )
@@ -153,11 +167,15 @@ class Register extends PureComponent {
           ? (
               <Box key={e} sx={{ marginTop: '7.5%' }}>
                 <TextField
+                  error={!myForm[e].valid}
                   select
                   label={`Pilih ${generateLabel(e)}`}
+                  value={myForm[e].value}
                   sx={{
                     width: "86.5%"
                   }}
+                  onChange={(ev) => this.handleInputChange(e, ev.target.value)}
+                  helperText={myForm[e].message}
                 >
                   {this.state.listInput[e].map((option) => (
                     <MenuItem key={option} value={option}>
@@ -174,7 +192,7 @@ class Register extends PureComponent {
                       placeholder={`Masukkan ${generateLabel(e)}`}
                       error={!myForm[e].valid}
                       value={myForm[e].value}
-                      onChange={(e) => this.handleInputChange(e.target.name, e.target.value)}
+                      onChange={(ev) => this.handleInputChange(e, ev.target.value)}
                       name={e}
                       helperText={myForm[e].message}
                       type={
@@ -190,20 +208,18 @@ class Register extends PureComponent {
             <Button variant="contained" onClick={this.handleSubmit}>Register</Button>
         </Box>
         <Box sx={{display: 'inline-block', marginTop: '5%'}}>
-            <Button variant="contained" onClick={() => this.setState((prevState) => {
+            <Button variant="contained" onClick={() => this.setState(() => {
               return {
                 index: this.state.index === 0 ? 1 : 0,
-                listInput: {
-                  ...prevState.listInput,
-                  "jenjangPendidikan": this.state.index === 1 ? jenjangDosen : jenjangSiswa,
-                },
-                ...structure(this.state.index),
+                myForm: {
+                  ...structure(this.state.index).myForm,
+                }
               }
             })}>Register as {this.state.index === 0 ? "mahasiswa" : "teacher"}</Button>
         </Box>
         </CenteredBox>
         
-      </>
+      </Box>
     )
   }
 }
