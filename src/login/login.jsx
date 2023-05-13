@@ -11,7 +11,8 @@ import { Link } from 'react-router-dom';
 import CenteredBox from '../container/centeredBox/centeredBox';
 import { generateLabel } from '../container/function/generateLabel';
 
-import axios from 'axios';
+import { axiosPost } from '../container/function/axiosPost';
+
 
 class Login extends PureComponent {
     state = {
@@ -63,13 +64,14 @@ class Login extends PureComponent {
             }, () => {
                 allFormValid = allFormValid && this.state.myForm[d].valid;
                 if(d === "password" && allFormValid) {
-                    axios.post(
-                        "https://6618-182-253-199-42.ngrok-free.app/login",
-                        JSON.stringify(this.state.myForm)
-                    ).then((response) => {
+                    axiosPost("/login", this.state.myForm).then((response) => {
+                        console.log("response : ",response)
                         alert(response)
+                        console.error(response)
                     }).catch((response) => {
+                        console.log("response : ",response)
                         alert(response)
+                        console.error(response)
                     })
                 }
             })
@@ -87,7 +89,7 @@ class Login extends PureComponent {
                     {Object.keys(myForm).map(e => (
                         <Box key={e} sx={{ marginTop: '4.5%' }}>
                             <TextField
-                                label={e.includes("User") ? `${generateLabel(e)} / password` : generateLabel(e)}
+                                label={!e.includes("pass") ? `${generateLabel(e)} / email` : generateLabel(e)}
                                 placeholder={`Masukkan ${e}`}
                                 error={!myForm[e].valid}
                                 value={myForm[e].value}

@@ -11,11 +11,12 @@ import MenuItem from '@mui/material/MenuItem';
 
 import { generateLabel } from '../container/function/generateLabel';
 
-import axios from 'axios';
+import { axiosPost } from '../container/function/axiosPost';
 
 const structure = (index) => {
   const baseStructure = {
     myForm: {
+      index: 0,
       name: {
         value: "",
         valid: true,
@@ -32,6 +33,11 @@ const structure = (index) => {
         message: "",
       },
       password: {
+        value: "",
+        valid: true,
+        message: "",
+      },
+      confirmPassword: {
         value: "",
         valid: true,
         message: "",
@@ -72,7 +78,6 @@ const gelarDosen = ["S1", "S2", "S3"]
 
 class Register extends PureComponent {
   state = {
-    index: 1,
     ...structure(0),
     listInput: {
       "jenjangPendidikan": jenjang,
@@ -98,7 +103,7 @@ class Register extends PureComponent {
   handleSubmit = () => {
     let allFormValid = true;
     Object.keys(this.state.myForm).forEach(d => {
-        this.setState((prevState) => {
+        !d.includes("index") && this.setState((prevState) => {
             const stringLength = prevState.myForm[d].value.toString().trim().length
             return {
                 ...prevState,
@@ -110,27 +115,34 @@ class Register extends PureComponent {
                             ? stringLength >= 8
                             : d.includes("mail") 
                               ? prevState.myForm[d].value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) && prevState.myForm[d].value.trim().length > 0
-                              : stringLength > 0,
+                              : d.includes("confirm")
+                                ? prevState.myForm.confirmPassword.value === prevState.myForm.password.value && prevState.myForm.confirmPassword.value.trim().length > 0 && prevState.myForm.password.value.trim().length > 0
+                                : stringLength > 0,
                         message: d.includes("pass") 
                             ? stringLength >= 8 ? "" : "Atleast 8 long password"
                             : d.includes("mail") 
                               ? stringLength > 0
                                 ? !prevState.myForm[d].value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) && "Email format is not valid !"
                                 :  "Cannot be empty"
-                              : stringLength > 0 ? "" : "Cannot be empty !"
+                              : d.includes("confirm")
+                                ? prevState.myForm.confirmPassword === prevState.myForm.password 
+                                  ? ""
+                                  : "Confirm password is not match !"
+                                : stringLength > 0 ? "" : "Cannot be empty !"
                     }
                 }
             }
         }, () => {
             allFormValid = allFormValid && this.state.myForm[d].valid;
             if(d === "password" && allFormValid) {
-              axios.post(
-                "",
-                JSON.stringify(this.state.myForm)
-              ).then((response) => {
-                  alert(response)
+              axiosPost("/registerStudent", this.state.myForm).then((response) => {
+                console.log("response : ",response)
+                alert(response)
+                console.error(response)
               }).catch((response) => {
+                  console.log("response : ",response)
                   alert(response)
+                  console.error(response)
               })
             }
         })
@@ -142,83 +154,85 @@ class Register extends PureComponent {
 
     return(
       <Box sx={{
-        marginTop: this.state.index === 1 ? "1vh" : "17vh",
-        padding: "1%"
+        marginTop: myForm.index === 0 ? "12vh" : "12.5%",
+        marginBottom: myForm.index === 0 ? "12vh" : "12.5%",
       }}>
         <CenteredBox>
           <Typography mb={'15%'}>
               Register to NAMA APLIKASI
           </Typography>
-          {Object.keys(myForm).map(e => e.includes("Lahir") 
-          ? (
-              <Box key={e} sx={{ marginTop: '7.5%' }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker 
-                  value={new Date(myForm[e].value)}
-                  sx={{
-                    width: "86.5%"
-                  }} 
-                  label={generateLabel(e)}
-                  onChange={(ev) => this.handleInputChange(e, (new Date(ev)))}/>
-                </LocalizationProvider>
-              </Box>
-          )
-          : e.includes("jenjang") || e.includes("gelar") || e.includes("pelajaran") 
-          ? (
-              <Box key={e} sx={{ marginTop: '7.5%' }}>
-                <TextField
-                  error={!myForm[e].valid}
-                  select
-                  label={`Pilih ${generateLabel(e)}`}
-                  value={myForm[e].value}
-                  sx={{
-                    width: "86.5%"
-                  }}
-                  onChange={(ev) => this.handleInputChange(e, ev.target.value)}
-                  helperText={myForm[e].message}
-                >
-                  {this.state.listInput[e].map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Box>
+          {Object.keys(myForm).map(e => e.includes("index") 
+          ? <></>
+          : e.includes("Lahir") 
+            ? (
+                <Box key={e} sx={{ marginTop: '7.5%' }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker 
+                    value={new Date(myForm[e].value)}
+                    sx={{
+                      width: "86.5%"
+                    }} 
+                    label={generateLabel(e)}
+                    onChange={(ev) => this.handleInputChange(e, (new Date(ev)))}/>
+                  </LocalizationProvider>
+                </Box>
             )
-            : (
-              <Box key={e} sx={{ marginTop: '7.5%' }}>
-                  <TextField
-                      label={generateLabel(e)}
-                      placeholder={`Masukkan ${generateLabel(e)}`}
+            : e.includes("jenjang") || e.includes("gelar") || e.includes("pelajaran") 
+              ? (
+                  <Box key={e} sx={{ marginTop: '7.5%' }}>
+                    <TextField
                       error={!myForm[e].valid}
+                      select
+                      label={`Pilih ${generateLabel(e)}`}
                       value={myForm[e].value}
+                      sx={{
+                        width: "86.5%"
+                      }}
                       onChange={(ev) => this.handleInputChange(e, ev.target.value)}
-                      name={e}
                       helperText={myForm[e].message}
-                      type={
-                          e.includes("pass")
-                            ? "password"
-                            : "text"
-                      }
-                  />
-              </Box>
+                    >
+                      {this.state.listInput[e].map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Box>
+                )
+                : (
+                  <Box key={e} sx={{ marginTop: '7.5%' }}>
+                      <TextField
+                          label={generateLabel(e)}
+                          placeholder={`Masukkan ${generateLabel(e)}`}
+                          error={!myForm[e].valid}
+                          value={myForm[e].value}
+                          onChange={(ev) => this.handleInputChange(e, ev.target.value)}
+                          name={e}
+                          helperText={myForm[e].message}
+                          type={
+                              e.includes("pass") || e.includes("confirm")
+                                ? "password"
+                                : "text"
+                          }
+                      />
+                  </Box>
+                )
             )
-          )}
+        }
         <Box sx={{display: 'block', marginTop: '5%'}}>
             <Button variant="contained" onClick={this.handleSubmit}>Register</Button>
         </Box>
         <Box sx={{display: 'inline-block', marginTop: '5%'}}>
             <Button variant="contained" onClick={() => this.setState(() => {
               return {
-                index: this.state.index === 0 ? 1 : 0,
                 myForm: {
-                  ...structure(this.state.index).myForm,
+                  ...structure(this.state.myForm.index === 0 ? 1 : 0).myForm,
+                  index: this.state.myForm.index === 0 ? 1 : 0,
                 }
               }
-            })}>Register as {this.state.index === 0 ? "mahasiswa" : "teacher"}</Button>
+            })}>Register as {this.state.myForm.index === 1 ? "mahasiswa" : "teacher"}</Button>
         </Box>
         </CenteredBox>
-        
       </Box>
     )
   }
