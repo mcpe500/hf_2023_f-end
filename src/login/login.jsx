@@ -2,27 +2,14 @@ import { React, PureComponent } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-
-import '../css/input.css'
 import { Typography } from '@mui/material';
 
-function CenteredBox({children}) {
-    return (
-        <Box 
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="100vh"
-        >
-            <div>
-                <Typography align='center' mb={'15%'}>
-                    Login to NAMA APLIKASI
-                </Typography>
-                {children}
-            </div>
-        </Box>
-    );
-}
+import '../css/input.css'
+
+import { Link } from 'react-router-dom';
+
+import CenteredBox from '../container/centeredBox/centeredBox';
+import { generateLabel } from '../container/function/generateLabel';
 
 class Login extends PureComponent {
     state = {
@@ -86,11 +73,14 @@ class Login extends PureComponent {
         return(
             <>
                 <CenteredBox>
+                    <Typography align='center' mb={'15%'}>
+                        Login to NAMA APLIKASI
+                    </Typography>
                     {Object.keys(myForm).map(e => (
-                        <Box key={e} sx={{ marginTop: '2.5%' }}>
+                        <Box key={e} sx={{ marginTop: '4.5%' }}>
                             <TextField
-                                label={e}
-                                placeholder={`Masukkan username ${e}`}
+                                label={generateLabel(e)}
+                                placeholder={`Masukkan ${e}`}
                                 error={!myForm[e].valid}
                                 value={myForm[e].value}
                                 onChange={(e) => this.handleInputChange(e.target.name, e.target.value)}
@@ -107,6 +97,9 @@ class Login extends PureComponent {
                     <Box sx={{display: 'flex', justifyContent: 'center', justifyItems: 'center', marginTop: '5%'}}>
                         <Button variant="contained" onClick={this.handleSubmit}>Login</Button>
                     </Box>
+                    <h5>
+                        Don't have account ?, <Link to={'/register'}>create now</Link>
+                    </h5>
                 </CenteredBox>
             </>
         )

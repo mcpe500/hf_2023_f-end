@@ -7,9 +7,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
 
 function Navigation(props) {
     const navItems = ["Home", "Login / Register"]
+    const url = ["/", "/login"]
     return (
     <>
         <CssBaseline />
@@ -34,10 +36,12 @@ function Navigation(props) {
                 NAMA APLIKASI
                 </Typography>
                 <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                {navItems.map((item) => (
-                    <Button key={item} sx={{ color: '#fff' }}>
-                    {item}
-                    </Button>
+                {navItems.map((item, i) => (
+                    <Link to={url[i]} style={{textDecoration: 'none'}}>
+                        <Button key={item} sx={{ color: '#fff' }}>
+                            {item}
+                        </Button>
+                    </Link>
                 ))}
                 </Box>
             </Toolbar>
