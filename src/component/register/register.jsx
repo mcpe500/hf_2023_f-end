@@ -3,15 +3,16 @@ import { Typography } from '@mui/material';
 import { TextField, Button } from '@mui/material';
 
 import Box from '@mui/material/Box';
-import CenteredBox from '../container/centeredBox/centeredBox';
+import CenteredBox from '../../container/centeredBox/centeredBox';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import MenuItem from '@mui/material/MenuItem';
 
-import { generateLabel } from '../container/function/generateLabel';
+import { generateLabel } from '../../container/function/generateLabel';
 
-import { axiosPost } from '../container/function/axiosPost';
+import { axiosPost } from '../../container/function/axiosPost';
+import { Link } from 'react-router-dom';
 
 const structure = (index) => {
   const baseStructure = {
@@ -125,7 +126,7 @@ class Register extends PureComponent {
                                 ? !prevState.myForm[d].value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) && "Email format is not valid !"
                                 :  "Cannot be empty"
                               : d.includes("confirm")
-                                ? prevState.myForm.confirmPassword === prevState.myForm.password 
+                                ? prevState.myForm.confirmPassword.value === prevState.myForm.password.value 
                                   ? ""
                                   : "Confirm password is not match !"
                                 : stringLength > 0 ? "" : "Cannot be empty !"
@@ -134,19 +135,20 @@ class Register extends PureComponent {
             }
         }, () => {
             allFormValid = allFormValid && this.state.myForm[d].valid;
-            if(d === "password" && allFormValid) {
-              axiosPost("/registerStudent", this.state.myForm).then((response) => {
-                console.log("response : ",response)
-                alert(response)
-                console.error(response)
-              }).catch((response) => {
-                  console.log("response : ",response)
-                  alert(response)
-                  console.error(response)
-              })
-            }
         })
-    });
+    })
+    if(allFormValid) {
+      const axios_req = this.state.myForm.index === 0 ? axiosPost("/registerStudent", this.state.myForm) : axiosPost("/registerGuru", this.state.myForm)
+      axios_req.then((response) => {
+        console.log("response : ",response)
+        alert(response)
+        console.error(response)
+      }).catch((response) => {
+          console.log("response : ",response)
+          alert(response)
+          console.error(response)
+      })
+    }
   };
 
   render() {
@@ -232,6 +234,9 @@ class Register extends PureComponent {
               }
             })}>Register as {this.state.myForm.index === 1 ? "mahasiswa" : "teacher"}</Button>
         </Box>
+        <h5 style={{textAlign: "center"}}>
+            Already have account ?, <Link to={'/login'}>login now</Link>
+        </h5>
         </CenteredBox>
       </Box>
     )

@@ -8,10 +8,13 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
+import RobotoCondensed from '../../assets/font/RobotoCondensed/RobotoCondensed-Regular.ttf';
 
 function Navigation(props) {
+    const navAuthenticated = ["Logout"]
     const navItems = ["Home", "Login / Register"]
     const url = ["/", "/login"]
+    const authenticated = localStorage.getItem("jwt_token").length !== 0
     return (
     <>
         <CssBaseline />
@@ -31,18 +34,29 @@ function Navigation(props) {
                 <Typography
                 variant="h6"
                 component="div"
-                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }}}
                 >
                 NAMA APLIKASI
                 </Typography>
                 <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                {navItems.map((item, i) => (
-                    <Link to={url[i]} style={{textDecoration: 'none'}}>
-                        <Button key={item} sx={{ color: '#fff' }}>
-                            {item}
-                        </Button>
-                    </Link>
-                ))}
+                {authenticated ? (
+                    navAuthenticated.map((item, i) => (
+                            <Link to={url[i]} style={{textDecoration: 'none'}}>
+                                <Button key={item} sx={{ color: '#fff' }}>
+                                    {item}
+                                </Button>
+                            </Link>
+                        ))
+                    ) : (
+                        navItems.map((item, i) => (
+                            <Link to={url[i]} style={{textDecoration: 'none'}}>
+                                <Button key={item} sx={{ color: '#fff' }}>
+                                    {item}
+                                </Button>
+                            </Link>
+                        ))
+                    )
+                }
                 </Box>
             </Toolbar>
         </AppBar>

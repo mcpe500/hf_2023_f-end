@@ -4,15 +4,14 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
 
-import '../css/input.css'
+import '../../css/input.css'
 
 import { Link } from 'react-router-dom';
 
-import CenteredBox from '../container/centeredBox/centeredBox';
-import { generateLabel } from '../container/function/generateLabel';
+import CenteredBox from '../../container/centeredBox/centeredBox';
+import { generateLabel } from '../../container/function/generateLabel';
 
-import { axiosPost } from '../container/function/axiosPost';
-
+import { axiosPost } from '../../container/function/axiosPost';
 
 class Login extends PureComponent {
     state = {
@@ -30,6 +29,8 @@ class Login extends PureComponent {
         }
     }
 
+    
+
     handleInputChange = (label, value) => {
         this.setState((prevState) => ({
             myForm: {
@@ -43,6 +44,7 @@ class Login extends PureComponent {
     };
 
     handleSubmit = () => {
+        
         let allFormValid = true;
         Object.keys(this.state.myForm).forEach(d => {
             this.setState((prevState) => {
@@ -66,12 +68,15 @@ class Login extends PureComponent {
                 if(d === "password" && allFormValid) {
                     axiosPost("/login", this.state.myForm).then((response) => {
                         console.log("response : ",response)
-                        alert(response)
-                        console.error(response)
+                        localStorage.setItem('jwt_token', response.data.token)
+                        if(response.data.role === 0) {
+                            window.location.href = "/teacherDashboard"
+                        } else if(response.data.role === 1) {
+                            window.location.href = "/studentDashboard"
+                        }
                     }).catch((response) => {
                         console.log("response : ",response)
                         alert(response)
-                        console.error(response)
                     })
                 }
             })
@@ -107,7 +112,7 @@ class Login extends PureComponent {
                     <Box sx={{display: 'flex', justifyContent: 'center', justifyItems: 'center', marginTop: '5%'}}>
                         <Button variant="contained" onClick={this.handleSubmit}>Login</Button>
                     </Box>
-                    <h5>
+                    <h5 style={{textAlign: "center"}}>
                         Don't have account ?, <Link to={'/register'}>create now</Link>
                     </h5>
                 </CenteredBox>
