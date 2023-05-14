@@ -67,7 +67,7 @@ function StudentDashboard() {
                         <ListItemText  style={{fontWeight:'bold'}} primary={data.username}/>
                         </ListItemButton>
                     </ListItem>
-                    {['Overview', 'Prompt', 'History', 'Upgrade Account'].map((text, index) => (
+                    {['Overview', 'Prompt(Alpaca)', 'History', 'Upgrade Account'].map((text, index) => (
                         <ListItem key={text} disablePadding>
                         <ListItemButton selected={selectedIndex === index} onClick={(event) => handleListItemClick(event, index)}>
                             <ListItemIcon>
