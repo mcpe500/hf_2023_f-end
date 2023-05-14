@@ -44,7 +44,7 @@ function LandingPage(props) {
                             <Typography align="left" variant="h4" color="primary" sx={{ ...styles }}>
                                 Jadikan inovasi dengan teknologi AI canggih dengan{" "}
                                 <Box component="span" sx={{ color: yellow[600] }}>
-                                Nama Aplikasi
+                                Approved
                                 </Box>
                             </Typography>
                         </Grid>

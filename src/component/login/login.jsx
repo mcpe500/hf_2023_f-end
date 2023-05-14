@@ -70,9 +70,10 @@ class Login extends PureComponent {
                         console.log("response : ",response)
                         localStorage.setItem('jwt_token', response.data.token)
                         if(response.data.role === 0) {
-                            window.location.href = "/teacherDashboard"
-                        } else if(response.data.role === 1) {
                             window.location.href = "/studentDashboard"
+                        } else if(response.data.role === 1) {
+                            window.location.href = "/teacherDashboard"
+                            localStorage.setItem("nama", this.state.myForm.username.value)
                         }
                     }).catch((response) => {
                         console.log("response : ",response)

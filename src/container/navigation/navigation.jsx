@@ -14,7 +14,7 @@ function Navigation(props) {
     const navAuthenticated = ["Logout"]
     const navItems = ["Home", "Login / Register"]
     const url = ["/", "/login"]
-    const authenticated = localStorage.getItem("jwt_token").length !== 0
+    const authenticated = localStorage.getItem("jwt_token") !== null
     return (
     <>
         <CssBaseline />
@@ -36,12 +36,15 @@ function Navigation(props) {
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }}}
                 >
-                NAMA APLIKASI
+                Approved
                 </Typography>
                 <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                 {authenticated ? (
                     navAuthenticated.map((item, i) => (
-                            <Link to={url[i]} style={{textDecoration: 'none'}}>
+                            <Link style={{textDecoration: 'none'}} onClick={() => {
+                                localStorage.clear()
+                                window.location.href = "/"
+                            }}>
                                 <Button key={item} sx={{ color: '#fff' }}>
                                     {item}
                                 </Button>

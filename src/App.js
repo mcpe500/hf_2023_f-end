@@ -7,7 +7,7 @@ import Login from './component/login/login';
 import Register from './component/register/register';
 import LandingPage from './container/landingPage/landingPage';
 import TeacherDashboard from './container/dashboard/dashboardTeacher';
-import StudentDashboard from './container/dashboard/dashboardStudent';
+import StudentDashboard from './container/dashboard/dashboardStudent/dashboardStudent';
 
 import {
   BrowserRouter as Router,

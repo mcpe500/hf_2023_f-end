@@ -137,12 +137,19 @@ class Register extends PureComponent {
             allFormValid = allFormValid && this.state.myForm[d].valid;
         })
     })
-    if(allFormValid) {
+
+    if(allFormValid && this.state.myForm.confirmPassword.value === this.state.myForm.password.value && this.state.myForm.confirmPassword.value.trim().length > 0 && this.state.myForm.password.value.trim().length > 0) {
       const axios_req = this.state.myForm.index === 0 ? axiosPost("/registerStudent", this.state.myForm) : axiosPost("/registerGuru", this.state.myForm)
       axios_req.then((response) => {
         console.log("response : ",response)
-        alert(response)
-        console.error(response)
+        alert()
+        if(response.data.message.toLowerCase().includes("success")) {
+          if(this.state.myForm.index === 0) {
+            window.location.href = "/studentDashboard"
+          } else {
+            window.location.href = "/teacherDashboard"
+          }
+        }
       }).catch((response) => {
           console.log("response : ",response)
           alert(response)

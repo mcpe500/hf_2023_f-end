@@ -1,0 +1,20 @@
+.landing_sidebar{
+  position: 'fixed';
+  top: '0';
+  bottom: '0';
+  width: '250px';
+  overflow: 'hidden';
+}
+.chatBanner{
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-weight: bold;
+}
+.bgblue{
+  background-color: rgb(197, 228, 228);
+}
+.bggreen{
+  background-color: rgb(196, 249, 185);
+}
