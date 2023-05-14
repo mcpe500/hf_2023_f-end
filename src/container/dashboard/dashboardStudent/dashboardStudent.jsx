@@ -3,7 +3,6 @@ import env from "./env.js";
 import './App.css';
 import { useState } from 'react';
 import axios from 'axios';
-import { items } from './itemsData';
 import { OverviewContent } from './overviewContent';
 import { PromptPage } from './promptPage';
 // card import
@@ -16,7 +15,6 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid'; // Grid version 1
 
 // sidebar
-import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
@@ -30,11 +28,6 @@ import HistoryIcon from '@mui/icons-material/History';
 import UpgradeIcon from '@mui/icons-material/Upgrade';
 import CodeIcon from '@mui/icons-material/Code';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Alert, PaperProps } from '@mui/material';
-
-// photo
-var menuIndex = 1;
-
 
 function StudentDashboard() {
     const [topicIndex, setTopicIndex] = useState(-1);
@@ -44,11 +37,15 @@ function StudentDashboard() {
         nama: '',
     });
     const handleListItemClick = (event, index) => {
+        if(index === 5) {
+            localStorage.clear()
+            window.location.href = "/"
+        }
         setSelectedIndex(index);
     }
     axios.get(env.server+'dashboard')
     .then(function (response){
-        setData({username: response.data.username, nama: response.data.nama,});
+        setData({username: localStorage.getItem("nama"), nama: response.data.nama,});
     }).catch(function (error){
         console.log(error);
     })
@@ -74,7 +71,7 @@ function StudentDashboard() {
                         <ListItem key={text} disablePadding>
                         <ListItemButton selected={selectedIndex === index} onClick={(event) => handleListItemClick(event, index)}>
                             <ListItemIcon>
-                            {index == 0 ? <InsertChartIcon/> : (index == 1 ? <CodeIcon/> : (index == 2 ? <HistoryIcon/> : <UpgradeIcon/>))}
+                            {index === 0 ? <InsertChartIcon/> : (index === 1 ? <CodeIcon/> : (index === 2 ? <HistoryIcon/> : <UpgradeIcon/>))}
                             </ListItemIcon>
                             <ListItemText primary={text} />
                         </ListItemButton>
@@ -83,16 +80,19 @@ function StudentDashboard() {
                     </List>
                     <Divider />
                     <List>
-                    {['Profile & Account', 'Log Out'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                        <ListItemButton selected={selectedIndex === index+4} onClick={(event) => handleListItemClick(event, index+4)}>
-                            <ListItemIcon>
-                            {index % 2 === 0 ? <AccountBoxIcon/> : <ExitToAppIcon/>}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                        </ListItem>
-                    ))}
+                    {['Profile & Account', 'Log Out'].map((text, index) =>  {
+                            return (
+                                <ListItem key={text} disablePadding>
+                                <ListItemButton selected={selectedIndex === index+4} onClick={(event) => handleListItemClick(event, index+4)}>
+                                    <ListItemIcon>
+                                    {index % 2 === 0 ? <AccountBoxIcon/> : <ExitToAppIcon/>}
+                                    </ListItemIcon>
+                                    <ListItemText primary={text} />
+                                </ListItemButton>
+                                </ListItem>
+                            )
+                        }  
+                    )}
                     </List>
                 </Box>
                 {/* sidebar */}

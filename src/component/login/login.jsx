@@ -67,11 +67,11 @@ class Login extends PureComponent {
                 allFormValid = allFormValid && this.state.myForm[d].valid;
                 if(d === "password" && allFormValid) {
                     axiosPost("/login", this.state.myForm).then((response) => {
-                        console.log("response : ",response)
                         localStorage.setItem('jwt_token', response.data.token)
-                        if(response.data.role === 0) {
+                        if(response.data.role === 1) {
                             window.location.href = "/studentDashboard"
-                        } else if(response.data.role === 1) {
+                            localStorage.setItem("nama", this.state.myForm.username.value)
+                        } else if(response.data.role === 0) {
                             window.location.href = "/teacherDashboard"
                             localStorage.setItem("nama", this.state.myForm.username.value)
                         }
@@ -90,7 +90,7 @@ class Login extends PureComponent {
             <>
                 <CenteredBox>
                     <Typography mb={'15%'}>
-                        Login to NAMA APLIKASI
+                        Login to Approved
                     </Typography>
                     {Object.keys(myForm).map(e => (
                         <Box key={e} sx={{ marginTop: '4.5%' }}>

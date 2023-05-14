@@ -4,9 +4,6 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
-import InboxIcon from '@mui/icons-material/Inbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
 import HomeIcon from '@mui/icons-material/Home';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -16,7 +13,6 @@ import CardMedia from '@mui/material/CardMedia';
 
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
-import { axiosGet } from '../function/axiosGet';
 
 import teacherImage from '../../assets/img/teacher_dashboard.jpg'
 

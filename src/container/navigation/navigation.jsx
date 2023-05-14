@@ -8,7 +8,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-import RobotoCondensed from '../../assets/font/RobotoCondensed/RobotoCondensed-Regular.ttf';
 
 function Navigation(props) {
     const navAuthenticated = ["Logout"]

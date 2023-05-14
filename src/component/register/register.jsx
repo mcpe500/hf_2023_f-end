@@ -168,7 +168,7 @@ class Register extends PureComponent {
       }}>
         <CenteredBox>
           <Typography mb={'15%'}>
-              Register to NAMA APLIKASI
+              Register to Approved
           </Typography>
           {Object.keys(myForm).map(e => e.includes("index") 
           ? <></>

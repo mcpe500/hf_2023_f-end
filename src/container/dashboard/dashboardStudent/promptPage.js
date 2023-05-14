@@ -21,7 +21,7 @@ export function PromptPage(index) {
           <Container maxWidth="xxl" sx={{ color: 'black' }}>
             <Box sx={{ bgcolor: '#c9dbf2', height: '90vh', borderRadius: '20px', padding: '2.5%', position: 'relative' }}>
               <center>
-                {index == -1 ? <h3>Pililah topic terlebih dahulu untuk jawaban yang lebih baik</h3> : <h1 style={{ fontWeight: 'bold' }}> {items[index].judul}</h1>}
+                {index === -1 ? <h3>Pililah topic terlebih dahulu untuk jawaban yang lebih baik</h3> : <h1 style={{ fontWeight: 'bold' }}> {items[index].judul}</h1>}
               </center>
               {/* content */}
               <Grid container spacing={2}>
@@ -37,7 +37,7 @@ export function PromptPage(index) {
                     overflowY: 'scroll'
                   }}>
                     {historyChat.map((text) => (
-                      text.role == "student" ? 
+                      text.role === "student" ? 
                       <div className='chatBanner bgblue'>{text.res}</div> : <div className='chatBanner bggreen'>{text.res}</div>
                     ))
                     }
@@ -45,7 +45,7 @@ export function PromptPage(index) {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField label="Outlined primary" color="primary" focused style={{ width: '100%' }} onKeyDown={async (event) => {
-                    if (event.key == 'Enter') {
+                    if (event.key === 'Enter') {
                       historyChat.push({res:event.target.value ,role:"student"})
                       let result;
                       // console.log(env.server)
